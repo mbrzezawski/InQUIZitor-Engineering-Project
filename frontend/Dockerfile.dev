@@ -1,0 +1,16 @@
+FROM node:20-bullseye
+
+WORKDIR /usr/src/app
+
+# Install deps first to leverage layer cache
+COPY package*.json ./
+RUN npm ci
+
+# Copy rest of the app (bind-mounted in dev, but copy for completeness)
+COPY . .
+
+EXPOSE 5173
+
+# Default command for dev (compose overrides command as needed)
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "5173"]
+
