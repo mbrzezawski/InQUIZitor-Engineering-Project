@@ -1,0 +1,32 @@
+FROM python:3.11-slim
+
+# Ensure Python outputs are not buffered and disable pip cache
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+# System dependencies for WeasyPrint, OCR (tesseract), PDF (poppler), and common libs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tesseract-ocr \
+    poppler-utils \
+    libcairo2 \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    libjpeg62-turbo \
+    zlib1g \
+    fonts-dejavu-core \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Leverage layer caching for deps
+COPY requirements.txt /app/requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --no-deps -r /app/requirements.txt
+
+# App source (bind-mounted in dev, but copy for completeness)
+COPY . /app
+
+EXPOSE 8000
+
