@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 from datetime import datetime
 from pathlib import Path
-from typing import Callable, Iterable, Optional, Sequence
+from typing import Callable, Iterable, Optional, Sequence, List
 
 from app.api.schemas.materials import MaterialOut, MaterialUpdate
 from app.application import dto
