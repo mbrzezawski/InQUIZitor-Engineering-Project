@@ -15,30 +15,35 @@ from app.domain.services import QuestionGenerator
 
 def _build_prompt(text: str, params: GenerateParams) -> str:
     parts = [
-        f"Based on the text below, create {params.num_closed} closed questions and {params.num_open} open questions."
-        f"\n\nText:\n{text}\n"
+        "Pracujesz jako ekspert dydaktyczny języka polskiego.",
+        "Twoim zadaniem jest przygotowanie pytań testowych na podstawie przekazanego materiału.",
+        "Każde pytanie i wszystkie odpowiedzi muszą być w języku polskim.",
+        f"Na podstawie poniższego tekstu utwórz {params.num_closed} pytań zamkniętych oraz {params.num_open} pytań otwartych.",
+        f"\n\nTekst źródłowy:\n{text}\n",
     ]
 
     if params.closed_types:
         closed_types_str = ", ".join(params.closed_types)
-        parts.append(f"For closed questions, use only the following types: {closed_types_str}.")
+        parts.append(
+            f"Dla pytań zamkniętych korzystaj wyłącznie z następujących typów: {closed_types_str}."
+        )
 
     parts.append(
-        f"Distribute difficulty levels as follows: {params.easy} easy, {params.medium} medium, {params.hard} hard."
+        f"Rozłóż poziomy trudności następująco: {params.easy} łatwych, {params.medium} średnich, {params.hard} trudnych."
     )
 
     parts.append(
         """
-Each question must be returned as a JSON object with the structure:
-{
-  "text": "...",
-  "is_closed": true | false,
-  "difficulty": 1 | 2 | 3,
-  "choices": [ ... ] or null,
-  "correct_choices": [ ... ] or null
-}
-Return ONLY a JSON array of such objects with no extra commentary.
-"""
+        Zwróć każde pytanie jako obiekt JSON o strukturze:
+        {
+        "text": "...",  # treść pytania po polsku
+        "is_closed": true | false,  # czy pytanie jest zamknięte
+        "difficulty": 1 | 2 | 3,  # 1=łatwe, 2=średnie, 3=trudne
+        "choices": [ ... ] lub null,  # lista wariantów odpowiedzi po polsku
+        "correct_choices": [ ... ] lub null  # lista poprawnych odpowiedzi po polsku
+        }
+        Zwróć TYLKO tablicę JSON takich obiektów, bez komentarzy i dodatkowego tekstu.
+        """
     )
 
     return "\n\n".join(parts)
