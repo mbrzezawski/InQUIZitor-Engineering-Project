@@ -14,6 +14,14 @@ import { useAuth } from "../../context/AuthContext";
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      navigate("/login", { replace: true });
+    }
+  };
+
 
   return (
     <NavbarContainer>
@@ -41,7 +49,7 @@ const Navbar: React.FC = () => {
             >
               {user.first_name} →
             </RegisterButton>
-            <LoginLink as="button" onClick={logout}>
+            <LoginLink as="button" onClick={handleLogout}>
               Wyloguj
             </LoginLink>
           </>
