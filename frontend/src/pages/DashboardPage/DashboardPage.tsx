@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { getMyTests, generateTest } from "../../services/test";
 import type { TestOut } from "../../services/test";
+import Footer from "../../components/Footer/Footer";
+
 
 import Sidebar from "../../components/Sidebar/Sidebar";
 
@@ -231,6 +233,7 @@ const DashboardPage: React.FC = () => {
           {genLoading ? "Generuję…" : "Generuj test"}
         </GenerateButton>
         {genError && <Subheading style={{ color: "red" }}>{genError}</Subheading>}
+        <Footer/>
       </ContentArea>
     </DashboardWrapper>
   );

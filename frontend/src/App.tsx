@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 import Navbar from "./components/Navbar/Navbar";
-import Footer from "./components/Footer/Footer";
 
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
@@ -50,7 +49,6 @@ const App: React.FC = () => {
           />
         </Routes>
 
-        <Footer />
       </BrowserRouter>
     </AuthProvider>
   );

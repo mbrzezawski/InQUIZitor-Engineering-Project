@@ -3,17 +3,11 @@ import styled from "styled-components";
 export const DashboardWrapper = styled.div`
   display: grid;
   grid-template-columns: 280px 1fr;
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
   background-color: ${({ theme }) => theme.colors.neutral.silver};
 `;
 
-export const Sidebar = styled.aside`
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  background-color: ${({ theme }) => theme.colors.neutral.white};
-  box-shadow: ${({ theme }) => theme.shadows["2px"]};
-`;
+
 
 export const SearchInput = styled.input`
   padding: 8px 12px;

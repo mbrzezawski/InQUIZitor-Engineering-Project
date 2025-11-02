@@ -1,4 +1,6 @@
 import React from 'react';
+import Footer from "../../components/Footer/Footer";
+
 
 const FAQPage: React.FC = () => {
   return (
