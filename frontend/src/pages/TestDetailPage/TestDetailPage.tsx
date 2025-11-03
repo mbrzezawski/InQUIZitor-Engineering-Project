@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { getMyTests, getTestDetail } from "../../services/test";
 import type { TestDetail, TestOut } from "../../services/test";
+import Footer from "../../components/Footer/Footer"
 
 import {
   PageWrapper,
@@ -54,8 +55,8 @@ const TestDetailPage: React.FC = () => {
     <PageWrapper>
       <Sidebar
         tests={tests}
-        onSelect={(testId) => navigate(`/dashboard/${testId}`)}
-        onCreateNew={() => {}}
+        onSelect={(testId) => navigate(`/tests/${testId}`)}
+        onCreateNew={() => navigate(`/tests/new`)}
       />
 
       <ContentWrapper>
@@ -104,6 +105,7 @@ const TestDetailPage: React.FC = () => {
             </QuestionItem>
           ))}
         </QuestionList>
+        <Footer/>
       </ContentWrapper>
     </PageWrapper>
   );

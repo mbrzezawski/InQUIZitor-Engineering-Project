@@ -12,6 +12,7 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import TestDetailPage from "./pages/TestDetailPage/TestDetailPage";
 import AboutUsPage from './pages/AboutUsPage/AboutUsPage';
 import FAQPage from './pages/FAQPage/FAQPage';
+import CreateTestPage from "./pages/CreateTestPage/CreateTestPage";
 
 
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
@@ -28,7 +29,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/dashboard/:testId" element={
+          <Route path="/tests/new" element={<CreateTestPage />} />
+          <Route path="/tests/:testId" element={
             // <ProtectedRoute>
               <TestDetailPage />
             // </ProtectedRoute>
