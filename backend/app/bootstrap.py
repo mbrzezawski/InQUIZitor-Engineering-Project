@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.application.services import AuthService, FileService, MaterialService, TestService
+from app.application.services import AuthService, FileService, MaterialService, TestService, UserService
 from app.application.unit_of_work import SqlAlchemyUnitOfWork
 from app.core.config import Settings, get_settings
 from app.db.session import get_session_factory, init_db
@@ -86,6 +86,11 @@ class AppContainer:
         return FileService(
             lambda: self.provide_unit_of_work(),
             storage=self._file_storage,
+        )
+
+    def provide_user_service(self) -> UserService:
+        return UserService(
+            lambda: self.provide_unit_of_work()
         )
 
     def provide_material_service(self) -> MaterialService:
