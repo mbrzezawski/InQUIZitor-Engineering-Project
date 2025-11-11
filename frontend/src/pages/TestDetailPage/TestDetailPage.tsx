@@ -41,6 +41,7 @@ import {
   DownloadBar,
   DownloadButton
 } from "./TestDetailPage.styles";
+import useDocumentTitle from "../../components/GeneralComponents/Hooks/useDocumentTitle";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
@@ -321,6 +322,8 @@ const TestDetailPage: React.FC = () => {
 
   const closedCount = data.questions.filter((q) => q.is_closed).length;
   const openCount = data.questions.length - closedCount;
+
+  useDocumentTitle("Test | Inquizitor");
 
   return (
     <PageWrapper>
