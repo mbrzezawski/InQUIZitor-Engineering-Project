@@ -16,7 +16,7 @@ import AboutUsPage from './pages/AboutUsPage/AboutUsPage';
 import FAQPage from './pages/FAQPage/FAQPage';
 import CreateTestPage from "./pages/CreateTestPage/CreateTestPage";
 
-import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+import ScrollToTop from "./components/GeneralComponents/ScrollToTop/ScrollToTop";
 
 
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
