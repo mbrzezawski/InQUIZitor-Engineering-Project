@@ -16,6 +16,8 @@ import AboutUsPage from './pages/AboutUsPage/AboutUsPage';
 import FAQPage from './pages/FAQPage/FAQPage';
 import CreateTestPage from "./pages/CreateTestPage/CreateTestPage";
 
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
+
 
 const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   const { user } = useAuth();
@@ -32,7 +34,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <Navbar />
         <NavbarSpacer />
-
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
