@@ -316,14 +316,14 @@ const TestDetailPage: React.FC = () => {
     }));
   };
 
+  useDocumentTitle("Test | Inquizitor");
+
   if (loading) return <PageWrapper>Ładowanie…</PageWrapper>;
   if (error) return <PageWrapper>Błąd: {error}</PageWrapper>;
   if (!data) return null;
 
   const closedCount = data.questions.filter((q) => q.is_closed).length;
   const openCount = data.questions.length - closedCount;
-
-  useDocumentTitle("Test | Inquizitor");
 
   return (
     <PageWrapper>
