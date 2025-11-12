@@ -5,7 +5,6 @@ import type { TestOut } from "../../services/test";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import useDocumentTitle from "../../components/GeneralComponents/Hooks/useDocumentTitle";
 
-// Import only the styles needed for the hub
 import {
   DashboardWrapper,
   EmptyStateWrapper,
@@ -17,7 +16,7 @@ import {
 import Footer from "../../components/Footer/Footer";
 
 const EMPTY_ILLUSTRATION = "/src/assets/dashboard_welcome.png";
-const HUB_ILLUSTRATION = "/src/assets/dashboard_welcome.png"; // You might want a different image
+const HUB_ILLUSTRATION = "/src/assets/dashboard_welcome.png"; //TODO: find a new pic?
 
 const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +35,6 @@ const DashboardPage: React.FC = () => {
   
   if (loading) return null; // Or a full-page spinner
 
-  // Case 1: First-time user, no tests. Show a full-page welcome.
   if (tests.length === 0) {
     return (
       <EmptyStateWrapper>
@@ -51,7 +49,6 @@ const DashboardPage: React.FC = () => {
     );
   }
 
-  // Case 2: User has tests. Show the main dashboard "hub".
   return (
     <DashboardWrapper>
       <Sidebar
