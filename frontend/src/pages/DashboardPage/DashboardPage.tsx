@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getMyTests } from "../../services/test";
 import type { TestOut } from "../../services/test";
 import Sidebar from "../../components/Sidebar/Sidebar";
+import useDocumentTitle from "../../components/GeneralComponents/Hooks/useDocumentTitle";
 
 // Import only the styles needed for the hub
 import {
@@ -31,6 +32,8 @@ const DashboardPage: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
+  useDocumentTitle("Panel główny | Inquizitor");
+  
   if (loading) return null; // Or a full-page spinner
 
   // Case 1: First-time user, no tests. Show a full-page welcome.
