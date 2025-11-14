@@ -35,6 +35,13 @@ const theme: DefaultTheme = {
       error: "#e53835",
       warning: "#fbc02d",
     },
+    danger: {
+      main: "#c62828", //main color
+      bg: "rgba(244, 67, 54, 0.08)", //background
+      border: "rgba(244, 67, 54, 0.3)", //border
+      hover: "rgba(244, 67, 54, 0.16)", //hover
+      shadow: "rgba(244, 67, 54, 0.18)" //box-shadow
+    },
   },
   shadows: {
     "2px": "0px 2px 4px 0px rgba(171, 189, 209, 0.6)",   

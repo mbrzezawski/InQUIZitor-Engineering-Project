@@ -2,7 +2,7 @@
 import styled, { css } from "styled-components";
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline";
+  variant?: "primary" | "secondary" | "outline" | "danger";
 }
 
 export const StyledButton = styled.button<ButtonProps>`
@@ -35,6 +35,19 @@ export const StyledButton = styled.button<ButtonProps>`
           border: 2px solid ${theme.colors.brand.primary};
           &:hover {
             background-color: ${theme.colors.tint.t5};
+            box-shadow: 0 3px 8px ${theme.colors.neutral.lGrey}
+          }
+        `;
+      case "danger":
+        return css`
+          background: ${theme.colors.danger.bg};
+          color: ${theme.colors.danger.main}; 
+          box-shadow: none;
+          border: 1px solid ${theme.colors.danger.border};
+
+          &:hover {
+            background: ${theme.colors.danger.hover};
+            box-shadow: 0 3px 8px ${theme.colors.danger.shadow};
           }
         `;
       default:

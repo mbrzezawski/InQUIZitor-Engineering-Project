@@ -36,6 +36,21 @@ def get_test(
     except ValueError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
+@router.delete("/{test_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_test(
+    test_id: int,
+    current_user: User = Depends(get_current_user),
+    test_service: TestService = Depends(get_test_service),
+):
+    try:
+        test_service.delete_test(
+            owner_id=current_user.id,
+            test_id=test_id,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.patch("/{test_id}/edit/{question_id}")
 def edit_question(

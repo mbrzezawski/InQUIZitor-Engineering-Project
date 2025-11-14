@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { useLoader } from "../../components/Loader/GlobalLoader";
+import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
 
 import {
   getMyTests,
@@ -10,6 +11,7 @@ import {
   addQuestion,
   updateQuestion,
   deleteQuestion,
+  deleteTest,
 } from "../../services/test";
 import type { TestDetail, TestOut, QuestionOut } from "../../services/test";
 import Footer from "../../components/Footer/Footer";
@@ -87,6 +89,8 @@ const TestDetailPage: React.FC = () => {
   const [draft, setDraft] = useState<Partial<QuestionOut>>({});
   const [isAdding, setIsAdding] = useState(false);
 
+  const [testIdToDelete, setTestIdToDelete] = useState<number | null>(null);
+
   const token = localStorage.getItem("access_token");
 
   const download = (url: string, filename: string) => {
@@ -137,6 +141,15 @@ const TestDetailPage: React.FC = () => {
     if (!testIdNum) return;
     const detail = await getTestDetail(testIdNum);
     setData(detail);
+  };
+
+  const refreshSidebarTests = async () => {
+    try {
+      const testsList = await getMyTests();
+      setTests(testsList);
+    } catch (e) {
+      console.error("Failed to refresh sidebar tests", e);
+    }
   };
 
   const startEdit = (q: QuestionOut) => {
@@ -316,6 +329,31 @@ const TestDetailPage: React.FC = () => {
     }));
   };
 
+  const handleOpenDeleteModal = (testId: number) => {
+    setTestIdToDelete(testId);
+  };
+
+  const handleCloseModal = () => {
+    setTestIdToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (testIdToDelete === null) return;
+
+    try {
+      await deleteTest(testIdToDelete);
+
+      await refreshSidebarTests();
+
+      navigate('/dashboard');
+
+    } catch (err) {
+      alert("Nie udało się usunąć testu: " + (err as Error).message);
+    } finally {
+      handleCloseModal();
+    }
+  };
+
   useDocumentTitle("Test | Inquizitor");
 
   if (loading) return <PageWrapper>Ładowanie…</PageWrapper>;
@@ -331,6 +369,7 @@ const TestDetailPage: React.FC = () => {
         tests={tests}
         onSelect={(testId) => navigate(`/tests/${testId}`)}
         onCreateNew={() => navigate(`/tests/new`)}
+        onDelete={(testId) => handleOpenDeleteModal(testId)}
       />
 
       <ContentWrapper>
@@ -697,6 +736,12 @@ const TestDetailPage: React.FC = () => {
         </DownloadBar>
 
         <Footer />
+        {testIdToDelete !== null && (
+        <ConfirmationModal
+          onCancel={handleCloseModal}
+          onConfirm={handleConfirmDelete}
+        />
+        )}
       </ContentWrapper>
     </PageWrapper>
   );

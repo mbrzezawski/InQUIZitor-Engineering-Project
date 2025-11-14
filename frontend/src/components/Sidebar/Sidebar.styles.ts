@@ -27,12 +27,39 @@ export const TestList = styled.div`
   gap: 8px;
 `;
 
+export const DeleteIcon = styled.img`
+  visibility: hidden;
+  opacity: 0;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+
+  /* Set a fixed size for the icon */
+  width: 24px; /* Adjust as needed */
+  height: 24px; /* Adjust as needed */
+  object-fit: contain; /* Ensures the image scales properly */
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.tint.t5 || '#ffebee'};
+  }
+`;
+
 export const TestItem = styled.div`
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
   &:hover {
     background-color: ${({ theme }) => theme.colors.tint.t5};
+
+    ${DeleteIcon} {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 `;
 
