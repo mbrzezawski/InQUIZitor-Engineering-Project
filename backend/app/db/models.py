@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
 from enum import Enum
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy import Column
+from sqlalchemy import Column, ForeignKey, Integer
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -24,11 +24,22 @@ class Test(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     owner: Optional[User] = Relationship(back_populates="tests")
-    questions: List["Question"] = Relationship(back_populates="test")
+    questions: List["Question"] = Relationship(
+        back_populates="test",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"}
+        )
 
 class Question(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    test_id: int = Field(foreign_key="test.id", index=True)
+    test_id: int = Field(
+        sa_column=Column(
+            "test_id",
+            Integer,
+            ForeignKey("test.id", ondelete="CASCADE"),
+            index=True,
+            nullable=False
+        )
+    )
     text: str
     is_closed: bool = Field(default=True)
     difficulty: int = Field(default=1)  # 1-easy, 2-medium, 3-hard
