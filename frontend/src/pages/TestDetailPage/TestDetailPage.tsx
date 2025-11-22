@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import { useLoader } from "../../components/Loader/GlobalLoader";
 import ConfirmationModal from "../../components/ConfirmationModal/ConfirmationModal";
+import editIcon from "../../assets/icons/edit-icon.png";
 
 import {
   getMyTests,
@@ -12,6 +13,7 @@ import {
   updateQuestion,
   deleteQuestion,
   deleteTest,
+  updateTestTitle,
 } from "../../services/test";
 import type { TestDetail, TestOut, QuestionOut } from "../../services/test";
 import Footer from "../../components/Footer/Footer";
@@ -41,7 +43,13 @@ import {
   AddQuestionBar,
   AddQuestionButton,
   DownloadBar,
-  DownloadButton
+  DownloadButton,
+  TitleRow,
+  TitleEditIconBtn,
+  HeaderInput,
+  TitleActions,
+  TitleSmallButton,
+  TitleSmallCancel,
 } from "./TestDetailPage.styles";
 import useDocumentTitle from "../../components/GeneralComponents/Hooks/useDocumentTitle";
 
@@ -90,6 +98,8 @@ const TestDetailPage: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false);
 
   const [testIdToDelete, setTestIdToDelete] = useState<number | null>(null);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState("");
 
   const token = localStorage.getItem("access_token");
 
@@ -139,6 +149,7 @@ const TestDetailPage: React.FC = () => {
     getTestDetail(id)
           .then((detail) => {
             setData(detail);
+            setTitleDraft(detail.title || "");
             setError(null);
             // Resetowanie stanów edycji przy zmianie testu
             setEditingId(null);
@@ -356,6 +367,34 @@ const TestDetailPage: React.FC = () => {
       handleCloseModal();
     }
   };
+  const beginTitleEdit = () => {
+    if (!data) return;
+    setTitleDraft(data.title || "");
+    setIsEditingTitle(true);
+  };
+
+  const saveTitle = async () => {
+    if (!data) return;
+    const next = titleDraft.trim();
+    if (!next) {
+      alert("Tytuł nie może być pusty");
+      return;
+    }
+    try {
+      await withLoader(async () => {
+        const updated = await updateTestTitle(data.test_id, next);
+        setData((prev) => (prev ? { ...prev, title: updated.title } : prev));
+        setIsEditingTitle(false);
+      });
+    } catch (e: any) {
+      alert(e.message || "Nie udało się zaktualizować tytułu");
+    }
+  };
+
+  const cancelTitle = () => {
+    setTitleDraft(data?.title || "");
+    setIsEditingTitle(false);
+  };
 
   useDocumentTitle("Test | Inquizitor");
 
@@ -370,7 +409,29 @@ const TestDetailPage: React.FC = () => {
     <PageWrapper>
 
       <ContentWrapper>
-        <Header>{data.title}</Header>
+        <TitleRow>
+          {isEditingTitle ? (
+            <>
+              <HeaderInput
+                value={titleDraft}
+                onChange={(e) => setTitleDraft(e.target.value)}
+                placeholder="Nazwa testu"
+              />
+              <TitleActions>
+                <TitleSmallButton onClick={saveTitle}>Zapisz</TitleSmallButton>
+                <TitleSmallCancel onClick={cancelTitle}>Anuluj</TitleSmallCancel>
+              </TitleActions>
+            </>
+          ) : (
+            <>
+              <Header>{data.title}</Header>
+              <TitleEditIconBtn onClick={beginTitleEdit} title="Edytuj tytuł">
+                <img src={editIcon} alt="Edytuj" />
+              </TitleEditIconBtn>
+            </>
+          )}
+        </TitleRow>
+
         <Meta>
           {data.questions.length} pytań |{" "}
           {data.questions.filter((q) => q.difficulty === 1).length} łatwe,{" "}

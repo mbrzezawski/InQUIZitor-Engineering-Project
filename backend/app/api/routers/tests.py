@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 
 from app.api.dependencies import get_test_service
-from app.api.schemas.tests import TestDetailOut, TestGenerateRequest, TestGenerateResponse, QuestionOut, QuestionCreate, QuestionUpdate
+from app.api.schemas.tests import TestDetailOut, TestGenerateRequest, TestGenerateResponse, QuestionOut, QuestionCreate, QuestionUpdate, TestTitleUpdate, TestOut
 from app.application.services import TestService
 from app.core.security import get_current_user
 from app.db.models import User
@@ -144,6 +144,24 @@ def export_xml(
         media_type="application/xml",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+@router.patch("/{test_id}/title", response_model=TestOut)
+def update_test_title(
+    test_id: int,
+    payload: TestTitleUpdate,
+    current_user: User = Depends(get_current_user),
+    test_service: TestService = Depends(get_test_service),
+):
+    try:
+        return test_service.update_test_title(
+            owner_id=current_user.id,
+            test_id=test_id,
+            title=payload.title,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail="Failed to update title") from exc
 
 
 __all__ = ["router"]

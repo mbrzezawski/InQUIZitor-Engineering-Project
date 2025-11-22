@@ -109,6 +109,22 @@ export async function getTestDetail(testId: number): Promise<TestDetail> {
   });
   return handleJson<TestDetail>(res, "Nie udało się pobrać testu");
 }
+export async function updateTestTitle(testId: number, title: string) {
+  const token = localStorage.getItem("access_token");
+  const res = await fetch(`${import.meta.env.VITE_API_URL}/tests/${testId}/title`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ title }),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.detail || "Nie udało się zaktualizować tytułu");
+  }
+  return res.json();
+}
 
 // --- NOWE: zarządzanie pytaniami ---
 
