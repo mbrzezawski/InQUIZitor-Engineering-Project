@@ -14,51 +14,48 @@ from app.domain.services import QuestionGenerator
 
 
 def _build_prompt(text: str, params: GenerateParams) -> str:
+    c_tf = params.closed.true_false
+    c_sc = params.closed.single_choice
+    c_mc = params.closed.multi_choice
+    c_total = c_tf + c_sc + c_mc
+
     parts = [
         "Pracujesz jako ekspert dydaktyczny języka polskiego.",
         "Twoim zadaniem jest przygotowanie pytań testowych na podstawie przekazanego materiału.",
         "Każde pytanie i wszystkie odpowiedzi muszą być w języku polskim.",
-        f"Na podstawie poniższego tekstu utwórz {params.num_closed} pytań zamkniętych oraz {params.num_open} pytań otwartych.",
+        f"Na podstawie poniższego tekstu utwórz łącznie {c_total} pytań zamkniętych oraz {params.num_open} pytań otwartych.",
+        f"Z pytań zamkniętych przygotuj dokładnie: {c_tf} × prawda/fałsz, {c_sc} × jednokrotnego wyboru oraz {c_mc} × wielokrotnego wyboru.",
         "",
         "Dodatkowo wygeneruj krótki, treściwy tytuł testu po polsku, który dobrze opisuje główny temat materiału.",
         "",
-        f"\n\nTekst źródłowy:\n{text}\n",
+        f"Rozłóż poziomy trudności następująco: {params.easy} łatwych, {params.medium} średnich, {params.hard} trudnych.",
+        "",
+        "Zwróć DOKŁADNIE JEDEN obiekt JSON o strukturze:",
+        """
+{
+  "title": "Krótki tytuł testu po polsku",
+  "questions": [
+    {
+      "text": "...",               // treść pytania
+      "is_closed": true | false,   // pytanie zamknięte / otwarte
+      "difficulty": 1 | 2 | 3,     // 1=łatwe, 2=średnie, 3=trudne
+      "choices": [ ... ] lub null, // dla zamkniętych
+      "correct_choices": [ ... ] lub null  // dla zamkniętych (stringi lub indeksy)
+    }
+  ]
+}
+        """,
+        "Wymagania:",
+        f"- Łącznie pytań: {c_total + params.num_open}.",
+        f"- Dokładnie {c_total} zamkniętych ({c_tf} TF, {c_sc} single, {c_mc} multi) i {params.num_open} otwartych.",
+        "- Zwróć WYŁĄCZNIE poprawny JSON (bez komentarzy/tekstu dookoła).",
+        "- Jeśli czegoś nie możesz wygenerować, i tak zwróć poprawny JSON (pusta lista 'questions').",
+        "",
+        f"Tekst źródłowy:\n{text}\n",
     ]
 
-    if params.closed_types:
-        closed_types_str = ", ".join(params.closed_types)
-        parts.append(
-            f"Dla pytań zamkniętych korzystaj wyłącznie z następujących typów: {closed_types_str}."
-        )
+    return "\n".join(parts)
 
-    parts.append(
-        f"Rozłóż poziomy trudności następująco: {params.easy} łatwych, {params.medium} średnich, {params.hard} trudnych."
-    )
-
-    parts.append(
-        """
-        Zwróć DOKŁADNIE JEDEN obiekt JSON o strukturze:
-        {
-        "title": "Krótki tytuł testu po polsku",
-        "questions": [
-            {
-            "text": "...",              // treść pytania po polsku
-            "is_closed": true | false,  // czy pytanie jest zamknięte
-            "difficulty": 1 | 2 | 3,    // 1=łatwe, 2=średnie, 3=trudne
-            "choices": [ ... ] lub null,
-            "correct_choices": [ ... ] lub null
-            },
-            ...
-        ]
-        }
-
-        Wymagania:
-        - Zwróć WYŁĄCZNIE poprawny JSON, bez komentarzy, bez dodatkowego tekstu przed ani po.
-        - Jeśli nie możesz czegoś wygenerować, nadal zwróć poprawny JSON z pustą tablicą "questions".
-        """
-    )
-
-    return "\n\n".join(parts)
 
 
 class GeminiQuestionGenerator(QuestionGenerator):
@@ -174,6 +171,24 @@ class GeminiQuestionGenerator(QuestionGenerator):
                     correct_choices=correct_choices or None,
                 )
             )
+        need_closed = params.closed.true_false + params.closed.single_choice + params.closed.multi_choice
+        need_open = params.num_open
+
+        selected: List[Question] = []
+        got_closed = 0
+        got_open = 0
+
+        for q in questions:
+            if q.is_closed and got_closed < need_closed:
+                selected.append(q)
+                got_closed += 1
+            elif (not q.is_closed) and got_open < need_open:
+                selected.append(q)
+                got_open += 1
+            if got_closed >= need_closed and got_open >= need_open:
+                break
+
+        questions = selected
 
         return title, questions
 

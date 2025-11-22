@@ -4,6 +4,23 @@ from pydantic import BaseModel, Field,field_validator, model_validator
 from datetime import datetime
 import json
 
+ClosedType = Literal["true_false", "single_choice", "multi_choice"]
+
+class ClosedBreakdown(BaseModel):
+    true_false: int = 0
+    single_choice: int = 0
+    multi_choice: int = 0
+
+    @model_validator(mode="after")
+    def non_negative(self):
+        for k, v in self.model_dump().items():
+            if v < 0:
+                raise ValueError(f"{k} must be >= 0")
+        return self
+
+    def total(self) -> int:
+        return self.true_false + self.single_choice + self.multi_choice
+
 class FileUploadResponse(BaseModel):
     file_id: int
     filename: str
@@ -20,19 +37,27 @@ class TestOut(BaseModel):
         from_attributes = True
 
 class GenerateParams(BaseModel):
-    num_closed: int
-    num_open: int
-    closed_types: Optional[List[Literal["true_false", "single_choice", "multi_choice"]]] = None
+    closed: ClosedBreakdown = Field(default_factory=ClosedBreakdown)
+    num_open: int = 0
+
     easy: int = 0
     medium: int = 0
     hard: int = 0
 
     @model_validator(mode="after")
-    def check_difficulty_sum(self):
+    def check_counts(self):
+        if self.num_open < 0:
+            raise ValueError("num_open must be >= 0")
+
         total = self.easy + self.medium + self.hard
-        if total != self.num_closed + self.num_open:
-            raise ValueError("The sum of easy, medium, and hard must equal num_closed + num_open")
+        expected = self.closed.total() + self.num_open
+        if total != expected:
+            raise ValueError(
+                "The sum of easy, medium, and hard must equal "
+                "closed.total() + num_open"
+            )
         return self
+
 
 
 class TestGenerateRequest(GenerateParams):
@@ -145,6 +170,7 @@ __all__ = [
     "FileUploadResponse",
     "TextInput",
     "TestOut",
+    "ClosedBreakdown",
     "GenerateParams",
     "TestGenerateRequest",
     "TestGenerateResponse",

@@ -6,17 +6,6 @@ export interface TestOut {
   created_at: string;
 }
 
-export interface GenerateParams {
-  num_closed: number;
-  num_open: number;
-  closed_types?: Array<"true_false" | "single_choice" | "multi_choice">;
-  easy: number;
-  medium: number;
-  hard: number;
-  text?: string;
-  file_id?: number;
-}
-
 export interface TestGenerateResponse {
   test_id: number;
   num_questions: number;
@@ -90,6 +79,22 @@ export async function getMyTests(): Promise<TestOut[]> {
     headers: getAuthHeaders(),
   });
   return handleJson<TestOut[]>(res, "Nie udało się pobrać listy testów");
+}
+
+export interface ClosedCounts {
+  true_false: number;
+  single_choice: number;
+  multi_choice: number;
+}
+
+export interface GenerateParams {
+  closed: ClosedCounts;
+  num_open: number;
+  easy: number;
+  medium: number;
+  hard: number;
+  text?: string;
+  file_id?: number;
 }
 
 export async function generateTest(
