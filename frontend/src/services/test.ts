@@ -165,3 +165,25 @@ export async function deleteQuestion(
     throw new Error(msg);
   }
 }
+
+export async function deleteTest(
+  testId: number,
+): Promise<void> {
+  const res = await fetch(
+    `${API_BASE}/tests/${testId}`,
+    {
+      method: "DELETE",
+      headers: getAuthHeaders(false),
+    }
+  );
+  if (!res.ok) {
+    let msg = "Nie udało się usunąć testu";
+    try {
+      const data = await res.json();
+      if (data?.detail) msg = data.detail;
+    } catch {
+      // ignore
+    }
+    throw new Error(msg);
+  }
+}
