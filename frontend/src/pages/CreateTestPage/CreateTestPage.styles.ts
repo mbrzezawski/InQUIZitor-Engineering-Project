@@ -275,16 +275,16 @@ export const GenerateButton = styled.button`
     font-size: ${theme.typography.body.medium.body2.fontSize};
     font-weight: ${theme.typography.body.medium.body2.fontWeight};
   `}
-  align-self: flex-start;
+  align-self: center;
   background-color: ${({ theme }) => theme.colors.brand.primary};
   color: #ffffff;
-  padding: 14px 32px;
+  padding: 16px 44px;
   border: none;
   background: #2196f3;
   border-radius: 999px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(33, 150, 243, 0.25);
-  margin-top: 4px;
+  margin-top: 8px;
   transition: all 0.16s ease-in-out;
 
   &:hover {
@@ -300,5 +300,160 @@ export const ErrorText = styled.p`
     font-size: ${theme.typography.body.regular.body3.fontSize};
   `}
   color: ${({ theme }) => theme.colors.action.error};
-  margin: 4px 0 0;
+  margin: 8px 0 0;
+  text-align: center;
+  align-self: center;
+  max-width: 720px;
+  line-height: 1.4;
+`;
+
+
+export const SectionRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const StatPill = styled.span`
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.tint.t5};
+  color: ${({ theme }) => theme.colors.neutral.dGrey};
+  font-weight: 600;
+  font-size: 12px;
+`;
+
+export const FieldsGrid = styled.div`
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+
+  @media (max-width: 980px) {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+  }
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const Field = styled.div<{ $invalid?: boolean }>`
+  background: ${({ theme }) => theme.colors.neutral.white};
+  border: 1px solid
+    ${({ theme, $invalid }) => ($invalid ? theme.colors.action.error : theme.colors.neutral.greyBlue)};
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .15s ease;
+
+  label {
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.neutral.grey};
+  }
+`;
+
+export const Counter = styled.div`
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid ${({ theme }) => theme.colors.neutral.greyBlue};
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+
+  button {
+    appearance: none;
+    border: 0;
+    background: ${({ theme }) => theme.colors.tint.t5};
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: 700;
+    line-height: 1;
+    transition: background .15s ease;
+  }
+  button:hover { filter: brightness(0.95); }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    border: 0;
+    outline: none;
+    padding: 8px 6px;
+    font-size: 14px;
+  }
+
+  /* ukrycie spinnerów */
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none; margin: 0;
+  }
+  input[type=number] { -moz-appearance: textfield; }
+`;
+
+export const SmallNote = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.neutral.grey};
+`;
+
+export const HelpRow = styled.div`
+  margin-top: 6px;
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.neutral.grey};
+`;
+
+export const Divider = styled.hr`
+  border: 0;
+  height: 1px;
+  background: ${({ theme }) => theme.colors.neutral.silver};
+  margin: 8px 0 4px;
+`;
+
+export const DistributionBar = styled.div<{ $disabled?: boolean }>`
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: #eef4ee;                 /* bardzo jasne oliwkowo-miętowe */
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  overflow: hidden;
+  display: flex;
+  gap: 0;                               /* segmenty stykają się bez przerw */
+  opacity: ${({ $disabled }) => ($disabled ? 0.6 : 1)};
+`;
+
+export const DistributionSegment = styled.div<{ $w: number; $bg: string }>`
+  flex: 0 0 ${({ $w }) => Math.max(0, Math.min($w, 100))}%;
+  background: ${({ $bg }) => $bg};
+  transition: flex-basis 220ms ease;
+`;
+
+export const PALETTE = {
+  diff: {
+    easyBg: "rgba(76, 175, 80, 0.12)",
+    easyFg: "#2e7d32",
+    medBg:  "rgba(255, 193, 7, 0.14)",
+    medFg:  "#f57f17",
+    hardBg: "rgba(244, 67, 54, 0.16)",
+    hardFg: "#c62828",
+  },
+  type: {
+    closedBg: "rgba(33, 150, 243, 0.12)",
+    closedFg: "#1565c0",
+    openBg:   "rgba(156, 39, 176, 0.12)",
+    openFg:   "#6a1b9a",
+  },
+  total: {
+    bg: "rgba(139, 160, 81, 0.16)", // #8BA051 z delikatną alfą
+    fg: "#556B2F",         
+  },
+};
+
+export const Pill = styled.span<{ $bg?: string; $fg?: string }>`
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+  background: ${({ $bg }) => $bg || "rgba(0,0,0,.06)"};
+  color: ${({ $fg }) => $fg || "#333"};
+  white-space: nowrap;
 `;
