@@ -36,7 +36,7 @@ const PublicOnlyRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
 
 const FallbackRedirect: React.FC = () => {
   const { user, loading } = useAuth();
-  if (loading) return null; // możesz tu wstawić globalny loader
+  if (loading) return null;
   return <Navigate to={user ? "/dashboard" : "/login"} replace />;
 };
 
