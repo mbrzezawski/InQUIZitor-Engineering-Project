@@ -350,6 +350,26 @@ class TestService:
             base = f"test_{test_id}"
 
         return f"{base}_{test_id}.{suffix}"
+    
+    def update_test_title(self, *, owner_id: int, test_id: int, title: str) -> TestOut:
+        title = (title or "").strip()
+        if not title:
+            raise ValueError("Title cannot be empty")
+
+        with self._uow_factory() as uow:
+            session = getattr(uow, "session", None)
+            if session is None:
+                raise RuntimeError("UnitOfWork session is not initialized")
+
+            test_row = session.get(TestRow, test_id)
+            if not test_row or test_row.owner_id != owner_id:
+                raise ValueError("Test not found")
+
+            test_row.title = title
+            session.add(test_row)
+            session.flush()
+
+            return dto.to_test_out(test_row)
 
 
 

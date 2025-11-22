@@ -309,3 +309,80 @@ export const ChoiceItem = styled.div<{ $correct?: boolean }>`
     color: ${theme.colors.neutral.dGrey};
   `}
 `;
+
+export const TitleRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+`;
+
+export const TitleEditIconBtn = styled.button`
+  border: none;
+  background: transparent;
+  padding: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 0;
+
+  &:hover {
+    background: rgba(0,0,0,0.06);
+  }
+
+  img {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+`;
+
+export const HeaderInput = styled.input`
+  flex: 1;
+  ${({ theme }) => `
+    font-family: ${theme.typography.heading.h2.fontFamily};
+    font-size: ${theme.typography.heading.h2.fontSize};
+    font-weight: ${theme.typography.heading.h2.fontWeight};
+    line-height: ${theme.typography.heading.h2.lineHeight};
+    color: ${theme.colors.neutral.dGrey};
+  `}
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+`;
+
+export const TitleActions = styled.div`
+  display: inline-flex;
+  gap: 8px;
+`;
+
+export const TitleSmallButton = styled.button`
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all .15s ease-in-out;
+  background: #4caf4f;
+  color: #fff;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+`;
+
+export const TitleSmallCancel = styled(TitleSmallButton)`
+  background: rgba(244, 67, 54, 0.08);
+  color: #c62828;
+  box-shadow: none;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+
+  &:hover {
+    background: rgba(244, 67, 54, 0.16);
+    box-shadow: 0 3px 8px rgba(244, 67, 54, 0.18);
+  }
+`;
+

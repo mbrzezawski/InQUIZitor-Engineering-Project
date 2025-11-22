@@ -1,6 +1,6 @@
 # app/schemas/test.py
 from typing import List, Optional, Literal
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field,field_validator, model_validator
 from datetime import datetime
 import json
 
@@ -138,6 +138,8 @@ class TestDetailOut(BaseModel):
     title: str
     questions: List[QuestionOut]
 
+class TestTitleUpdate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
 
 __all__ = [
     "FileUploadResponse",
@@ -149,5 +151,6 @@ __all__ = [
     "QuestionOut",
     "TestDetailOut",
     "QuestionCreate",
-    "QuestionUpdate"
+    "QuestionUpdate",
+    "TestTitleUpdate",
 ]
